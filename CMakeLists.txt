@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(VTKWrite LANGUAGES CXX)
+
+find_package(VTK REQUIRED)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_library(vtkWriter STATIC src/vtkWriter.cpp)
+
+target_include_directories(vtkWriter PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+include(${VTK_USE_FILE})
+
+set_target_properties(vtkWriter PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
+  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
+  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
+)
+
+
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
+TARGET_LINK_LIBRARIES(vtkWriter ${VTK_LIBRARIES})
