@@ -1,28 +1,43 @@
 cmake_minimum_required(VERSION 3.10)
+project(MyVTKProject)
 
-project(VTKWrite LANGUAGES CXX)
-
-find_package(VTK REQUIRED)
+# Set default build type to Debug if not specified
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Include directories
+include_directories(include)
 
-
-add_library(vtkWriter STATIC src/vtkWriter.cpp)
-
-target_include_directories(vtkWriter PUBLIC ${PROJECT_SOURCE_DIR}/include)
-
-include(${VTK_USE_FILE})
-
-set_target_properties(vtkWriter PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
-  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
-  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
+# Source files
+set(SOURCES
+    src/main.cpp
+    src/vtkWriter.cpp
 )
 
+# Build type specific output name
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(EXECUTABLE_NAME MyExecutable_debug)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(EXECUTABLE_NAME MyExecutable_release)
+else()
+    set(EXECUTABLE_NAME MyExecutable)
+endif()
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
+# Create the executable
+add_executable(${EXECUTABLE_NAME} ${SOURCES})
 
-TARGET_LINK_LIBRARIES(vtkWriter ${VTK_LIBRARIES})
+# Find and link VTK
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+target_link_libraries(${EXECUTABLE_NAME} ${VTK_LIBRARIES})
+
+# Optional definitions
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(${EXECUTABLE_NAME} PRIVATE DEBUG_MODE)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_definitions(${EXECUTABLE_NAME} PRIVATE RELEASE_MODE)
+endif()

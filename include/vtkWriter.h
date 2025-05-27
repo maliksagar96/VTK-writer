@@ -8,24 +8,35 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkUnstructuredGridWriter.h>
 
-class writeVTK_unstructured {
+class VTKUnstructuredWriter {
 public:
-  writeVTK_unstructured(){
+  VTKUnstructuredWriter(){
     init();
   };
-  ~writeVTK_unstructured();
+  ~VTKUnstructuredWriter();
    
-  void set_points(std::vector<double>&);
-  void set_cells(std::vector<int>&);
-  void add_scalar(std::vector<double>&, std::string);
-  void add_vector(std::vector<std::vector<double>>&, std::string);
-  void write_vtk(std::string);    
+  virtual void set_points(std::vector<double>&);
+  virtual void set_cells(std::vector<int>&);
+  virtual void add_scalar(std::vector<double>&, std::string);
+  virtual void add_vector(std::vector<std::vector<double>>&, std::string);
+  virtual void write_vtk(std::string);    
 
-private:
+protected:
   void init();
   vtkSmartPointer<vtkPoints> points;
   vtkSmartPointer<vtkCellArray> cells;
   vtkSmartPointer<vtkUnstructuredGrid> grid;
 };
+
+class VTKTriangleWriter : public VTKUnstructuredWriter {
+public:
+  void set_cells(std::vector<int>&) override;  
+};
+
+class VTKQuadWriter : public VTKUnstructuredWriter {
+public:
+  void set_cells(std::vector<int>&) override;  
+};
+
 
 #endif
