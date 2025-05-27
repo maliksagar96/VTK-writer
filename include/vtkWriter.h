@@ -3,17 +3,28 @@
 
 #include <iostream>
 #include <vector> 
-#include <vtkPoints.h>
 #include <vtkSmartPointer.h>
+#include <vtkPoints.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkUnstructuredGridWriter.h>
 
 class writeVTK_unstructured {
-  public:
-    writeVTK_unstructured(std::string fileName);  // Constructor
-    ~writeVTK_unstructured(); 
-    void write_vtk(std::string);
-    void set_points(std::vector<double>&);
+public:
+  writeVTK_unstructured(std::string fileName){
+    init();
+  };
+  ~writeVTK_unstructured(); 
+  void write_vtk(std::string);    
+  void set_points(std::vector<double>&);
+  void set_cells(std::vector<int>&);
+  void add_scalar(std::vector<double>&, std::string);
+  void add_vector(std::vector<std::vector<double>>&, std::string);
 
-    vtkSmartPointer<vtkPoints> points;
+private:
+  void init();
+  vtkSmartPointer<vtkPoints> points;
+  vtkSmartPointer<vtkCellArray> cells;
+  vtkSmartPointer<vtkUnstructuredGrid> grid;
 };
 
 #endif
