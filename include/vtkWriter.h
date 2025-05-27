@@ -10,15 +10,16 @@
 
 class writeVTK_unstructured {
 public:
-  writeVTK_unstructured(std::string fileName){
+  writeVTK_unstructured(){
     init();
   };
-  ~writeVTK_unstructured(); 
-  void write_vtk(std::string);    
+  ~writeVTK_unstructured();
+   
   void set_points(std::vector<double>&);
   void set_cells(std::vector<int>&);
   void add_scalar(std::vector<double>&, std::string);
   void add_vector(std::vector<std::vector<double>>&, std::string);
+  void write_vtk(std::string);    
 
 private:
   void init();

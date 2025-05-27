@@ -8,9 +8,10 @@
 #include <vtkCellArray.h>
 #include <vtkDoubleArray.h> 
 #include <vtkCellData.h>
-
+#include <iostream>
 
 void writeVTK_unstructured::init() {
+
   points = vtkSmartPointer<vtkPoints>::New();
   cells = vtkSmartPointer<vtkCellArray>::New();
   grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
@@ -26,10 +27,11 @@ void writeVTK_unstructured::set_points(std::vector<double>& coordinates) {
 
 void writeVTK_unstructured::set_cells(std::vector<int>& connectivity) {
   cells = vtkSmartPointer<vtkCellArray>::New();
-  for(int i = 0;i<connectivity.size();i++) {
+  for(int i = 0;i+2<connectivity.size();i+=3) {
     cells->InsertNextCell(3);
     cells->InsertCellPoint(connectivity[i]); cells->InsertCellPoint(connectivity[i+1]); cells->InsertCellPoint(connectivity[i+2]);
-  }    
+  }
+  grid->SetCells(VTK_TRIANGLE, cells);    
 }
 
 
@@ -65,8 +67,9 @@ void writeVTK_unstructured::add_vector(std::vector<std::vector<double>>& vect, s
 }
 
 void writeVTK_unstructured::write_vtk(std::string fname){
-  grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-  grid->SetCells(VTK_TRIANGLE, cells);  // Use correct cell type like VTK_TRIANGLE
-
+  vtkSmartPointer<vtkUnstructuredGridWriter> writer = vtkSmartPointer<vtkUnstructuredGridWriter>::New();
+  writer->SetFileName(fname.c_str());
+  writer->SetInputData(grid);
+  writer->Write();
   return;
 }
