@@ -13,7 +13,7 @@ This tool enables easy export of geometry and simulation data, ideal for scienti
   - Cell connectivity for triangle/quad meshes (`set_cells`)
   - Scalar fields (e.g., pressure, temperature) (`add_scalar`)
   - Vector fields (e.g., velocity, E-field) (`add_vector`)
-- ✅ Object-oriented design using modern C++ (RAII, smart pointers)
+- ✅ Object-oriented design using modern C++ 
 - ✅ Extensible via base class `VTKUnstructuredWriter`
 
 ---
