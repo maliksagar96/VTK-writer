@@ -1,4 +1,39 @@
-#include "vtkWriter.h"
+/*
+Simple use Cases.
+
+
+// vector<double> coords = {0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0};
+// vector<int> connectivity = {0, 1, 2, 1,3,2};
+// vector<double> scalara = {1.0, 2.0};
+// vector<vector<double>> electricField = {{1.0, 0.0, 0.0}, {2, 0, 0}};
+
+// VTKTriangleWriter vtk2elements;
+// vtk2elements.set_points(coords);
+// vtk2elements.set_cells(connectivity);
+// vtk2elements.add_scalar(scalara, "MyScalar");
+// vtk2elements.add_vector(electricField, "EField");
+// vtk2elements.write_vtk("tri.vtk");
+
+
+vector<double> coords = {0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 2,0,0, 2,1,0};
+vector<int> connectivity = {0, 1, 2, 3, 1, 4, 5, 2};
+vector<double> scalara = {1.0, 2.0};
+vector<vector<double>> electricField = {{1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}};
+
+VTKQuadWriter vtk2elements;
+vtk2elements.set_points(coords);
+vtk2elements.set_cells(connectivity);
+vtk2elements.add_scalar(scalara, "MyScalar");
+vtk2elements.add_vector(electricField, "EField");
+vtk2elements.write_vtk("quad.vtk");
+
+
+*/
+
+
+
+
+#include <vtkWriter.h>
 #include <vector> 
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
@@ -93,4 +128,34 @@ void VTKQuadWriter::set_cells(std::vector<int>& connectivity) {
 }
 grid->SetCells(VTK_QUAD, cells);
   
+}
+
+
+
+/************For Oct Files ************/
+// void VTKOctWriter::set_connectivity(std::vector<int>& connectivity, int n0, int n1, int n2, int n3,
+//                                     int n4, int n5, int n6, int n7) {
+//   connectivity.push_back(n0); // bottom-left-front
+//   connectivity.push_back(n1); // bottom-right-front
+//   connectivity.push_back(n2); // bottom-right-back
+//   connectivity.push_back(n3); // bottom-left-back
+//   connectivity.push_back(n4); // top-left-front
+//   connectivity.push_back(n5); // top-right-front
+//   connectivity.push_back(n6); // top-right-back
+//   connectivity.push_back(n7); // top-left-back
+// }
+
+void VTKOctWriter::set_cells(std::vector<int>& connectivity) {
+  for (int i = 0; i + 7 < connectivity.size(); i += 8) {
+    cells->InsertNextCell(8);          // 8 nodes for a hexahedron
+    cells->InsertCellPoint(connectivity[i]);   // n0
+    cells->InsertCellPoint(connectivity[i+1]); // n1
+    cells->InsertCellPoint(connectivity[i+2]); // n2
+    cells->InsertCellPoint(connectivity[i+3]); // n3
+    cells->InsertCellPoint(connectivity[i+4]); // n4
+    cells->InsertCellPoint(connectivity[i+5]); // n5
+    cells->InsertCellPoint(connectivity[i+6]); // n6
+    cells->InsertCellPoint(connectivity[i+7]); // n7
+  }
+  grid->SetCells(VTK_HEXAHEDRON, cells);
 }

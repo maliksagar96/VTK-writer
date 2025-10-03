@@ -69,5 +69,16 @@ public:
   void set_cells(std::vector<int>&) override;  
 };
 
+class VTKOctWriter : public VTKUnstructuredWriter {
+  public:
+  void set_cells(std::vector<int>&) override;  
+  void set_connectivity(std::vector<int>&,
+                             int, int, int, int,
+                             int, int, int, int);
+  void set_coords(std::vector<double>&, double, double, double);
+
+};
 
 #endif
+
+
