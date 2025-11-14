@@ -27,11 +27,16 @@ vtk2elements.add_scalar(scalara, "MyScalar");
 vtk2elements.add_vector(electricField, "EField");
 vtk2elements.write_vtk("quad.vtk");
 
+Use case when we have connectivity and offset values in VTk 5.1 file format.
+
+VTKTriangleWriter writer;
+writer.set_points(coords);
+writer.set_cells(connectivity);
+writer.add_scalar(scalar, "ScalarName");
+writer.add_vector(vectorField, "VectorName");
+writer.write_ascii_vtk_vtkapi("output_ascii.vtk");
 
 */
-
-
-
 
 #include <vtkWriter.h>
 #include <vector> 
@@ -158,4 +163,30 @@ void VTKOctWriter::set_cells(std::vector<int>& connectivity) {
     cells->InsertCellPoint(connectivity[i+7]); // n7
   }
   grid->SetCells(VTK_HEXAHEDRON, cells);
+}
+
+
+/**********************************For tetra files */
+
+void VTKTetraWriter::set_cells(std::vector<int>& connectivity) {
+  for (int i = 0; i + 3 < connectivity.size(); i += 4) {
+    cells->InsertNextCell(4);          // 4 nodes for a tetra
+    cells->InsertCellPoint(connectivity[i]);   // self
+    cells->InsertCellPoint(connectivity[i+1]); // right
+    cells->InsertCellPoint(connectivity[i+2]); // rightfront
+    cells->InsertCellPoint(connectivity[i+3]); // rightfronttop
+  }
+  grid->SetCells(VTK_TETRA, cells);
+}
+
+
+/************************************/
+void VTKUnstructuredWriter::write_ascii_vtk_vtkapi(const std::string& fname) {
+  vtkSmartPointer<vtkUnstructuredGridWriter> writer =
+      vtkSmartPointer<vtkUnstructuredGridWriter>::New();
+
+  writer->SetFileName(fname.c_str());
+  writer->SetInputData(grid);
+  writer->SetFileTypeToASCII(); 
+  writer->Write();
 }

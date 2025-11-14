@@ -20,6 +20,7 @@ public:
    * 
    */
   virtual void set_points(std::vector<double>&);
+  virtual void write_ascii_vtk_vtkapi(const std::string&);
 
   /**
    * @brief Set the connectivity of the mesh.
@@ -50,6 +51,8 @@ public:
    */
   virtual void write_vtk(std::string);    
 
+  
+
 protected:
   void init();
   vtkSmartPointer<vtkPoints> points;
@@ -71,13 +74,15 @@ public:
 
 class VTKOctWriter : public VTKUnstructuredWriter {
   public:
-  void set_cells(std::vector<int>&) override;  
-  void set_connectivity(std::vector<int>&,
-                             int, int, int, int,
-                             int, int, int, int);
-  void set_coords(std::vector<double>&, double, double, double);
-
+  void set_cells(std::vector<int>&) override;    
 };
+
+class VTKTetraWriter : public VTKUnstructuredWriter {
+  public:
+  void set_cells(std::vector<int>&) override;    
+};
+
+
 
 #endif
 
